@@ -1,5 +1,8 @@
 {
   "rewrites": [
-    { "source": "/", "destination": "/p.html" }
+    {
+      "source": "/",
+      "destination": "/news.cgtn.com/news/2025-10-05/Syrian-electors-vote-in-first-post-Assad-parliament-1HdmmMA6ru0/index.html"
+    }
   ]
 }
