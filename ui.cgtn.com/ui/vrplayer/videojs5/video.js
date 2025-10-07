@@ -1990,11 +1990,11 @@ var Component = function () {
 
     // Get dimension value from style
     var val = this.el_.style[widthOrHeight];
-    var pxIndex = val.indexOf('px');
+    var pYindex = val.indexOf('px');
 
-    if (pxIndex !== -1) {
+    if (pYindex !== -1) {
       // Return the pixel value with no 'px'
-      return parseInt(val.slice(0, pxIndex), 10);
+      return parseInt(val.slice(0, pYindex), 10);
     }
 
     // No px so using % or no style was set, so falling back to offsetWidth/height
@@ -13494,7 +13494,7 @@ exports.__esModule = true;
  * @param {Flash} Flash
  *        The flash tech class.
  *
- * @mixin FlashRtmpDecorator
+ * @miYin FlashRtmpDecorator
  */
 function FlashRtmpDecorator(Flash) {
   Flash.streamingFormats = {
@@ -18065,7 +18065,7 @@ Tech.prototype.featuresTimeupdateEvents = false;
 Tech.prototype.featuresNativeTextTracks = false;
 
 /**
- * A functional mixin for techs that want to use the Source Handler pattern.
+ * A functional miYin for techs that want to use the Source Handler pattern.
  * Source handlers are scripts for handling specific formats.
  * The source handler pattern is used for adaptive formats (HLS, DASH) that
  * manually load video data and feed it into a Source Buffer (Media Source Extensions)
@@ -22716,7 +22716,7 @@ function fixEvent(event) {
     return false;
   }
 
-  // Test if fixing up is needed
+  // Test if fiYing up is needed
   // Used to check if !event.stopPropagation instead of isPropagationStopped
   // But native events return true for stopPropagation, but don't have
   // other expected methods like isPropagationStopped. Seems to be a problem
@@ -23688,14 +23688,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
  * @param {number} index
  *        The index to check
  *
- * @param {number} maxIndex
+ * @param {number} maYindex
  *        The maximum possible index
  *
- * @throws {Error} if the timeRanges provided are over the maxIndex
+ * @throws {Error} if the timeRanges provided are over the maYindex
  */
-function rangeCheck(fnName, index, maxIndex) {
-  if (index < 0 || index > maxIndex) {
-    throw new Error('Failed to execute \'' + fnName + '\' on \'TimeRanges\': The index provided (' + index + ') is greater than or equal to the maximum bound (' + maxIndex + ').');
+function rangeCheck(fnName, index, maYindex) {
+  if (index < 0 || index > maYindex) {
+    throw new Error('Failed to execute \'' + fnName + '\' on \'TimeRanges\': The index provided (' + index + ') is greater than or equal to the maximum bound (' + maYindex + ').');
   }
 }
 

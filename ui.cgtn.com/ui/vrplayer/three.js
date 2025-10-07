@@ -6179,11 +6179,11 @@
 
 	var skinbase_vertex = "#ifdef USE_SKINNING\n\tmat4 boneMatX = getBoneMatrix( skinIndex.x );\n\tmat4 boneMatY = getBoneMatrix( skinIndex.y );\n\tmat4 boneMatZ = getBoneMatrix( skinIndex.z );\n\tmat4 boneMatW = getBoneMatrix( skinIndex.w );\n#endif";
 
-	var skinning_pars_vertex = "#ifdef USE_SKINNING\n\tuniform mat4 bindMatrix;\n\tuniform mat4 bindMatrixInverse;\n\t#ifdef BONE_TEXTURE\n\t\tuniform sampler2D boneTexture;\n\t\tuniform int boneTextureSize;\n\t\tmat4 getBoneMatrix( const in float i ) {\n\t\t\tfloat j = i * 4.0;\n\t\t\tfloat x = mod( j, float( boneTextureSize ) );\n\t\t\tfloat y = floor( j / float( boneTextureSize ) );\n\t\t\tfloat dx = 1.0 / float( boneTextureSize );\n\t\t\tfloat dy = 1.0 / float( boneTextureSize );\n\t\t\ty = dy * ( y + 0.5 );\n\t\t\tvec4 v1 = texture2D( boneTexture, vec2( dx * ( x + 0.5 ), y ) );\n\t\t\tvec4 v2 = texture2D( boneTexture, vec2( dx * ( x + 1.5 ), y ) );\n\t\t\tvec4 v3 = texture2D( boneTexture, vec2( dx * ( x + 2.5 ), y ) );\n\t\t\tvec4 v4 = texture2D( boneTexture, vec2( dx * ( x + 3.5 ), y ) );\n\t\t\tmat4 bone = mat4( v1, v2, v3, v4 );\n\t\t\treturn bone;\n\t\t}\n\t#else\n\t\tuniform mat4 boneMatrices[ MAX_BONES ];\n\t\tmat4 getBoneMatrix( const in float i ) {\n\t\t\tmat4 bone = boneMatrices[ int(i) ];\n\t\t\treturn bone;\n\t\t}\n\t#endif\n#endif";
+	var skinning_pars_vertex = "#ifdef USE_SKINNING\n\tuniform mat4 bindMatrix;\n\tuniform mat4 bindMatriYinverse;\n\t#ifdef BONE_TEXTURE\n\t\tuniform sampler2D boneTexture;\n\t\tuniform int boneTextureSize;\n\t\tmat4 getBoneMatrix( const in float i ) {\n\t\t\tfloat j = i * 4.0;\n\t\t\tfloat x = mod( j, float( boneTextureSize ) );\n\t\t\tfloat y = floor( j / float( boneTextureSize ) );\n\t\t\tfloat dx = 1.0 / float( boneTextureSize );\n\t\t\tfloat dy = 1.0 / float( boneTextureSize );\n\t\t\ty = dy * ( y + 0.5 );\n\t\t\tvec4 v1 = texture2D( boneTexture, vec2( dx * ( x + 0.5 ), y ) );\n\t\t\tvec4 v2 = texture2D( boneTexture, vec2( dx * ( x + 1.5 ), y ) );\n\t\t\tvec4 v3 = texture2D( boneTexture, vec2( dx * ( x + 2.5 ), y ) );\n\t\t\tvec4 v4 = texture2D( boneTexture, vec2( dx * ( x + 3.5 ), y ) );\n\t\t\tmat4 bone = mat4( v1, v2, v3, v4 );\n\t\t\treturn bone;\n\t\t}\n\t#else\n\t\tuniform mat4 boneMatrices[ MAX_BONES ];\n\t\tmat4 getBoneMatrix( const in float i ) {\n\t\t\tmat4 bone = boneMatrices[ int(i) ];\n\t\t\treturn bone;\n\t\t}\n\t#endif\n#endif";
 
-	var skinning_vertex = "#ifdef USE_SKINNING\n\tvec4 skinVertex = bindMatrix * vec4( transformed, 1.0 );\n\tvec4 skinned = vec4( 0.0 );\n\tskinned += boneMatX * skinVertex * skinWeight.x;\n\tskinned += boneMatY * skinVertex * skinWeight.y;\n\tskinned += boneMatZ * skinVertex * skinWeight.z;\n\tskinned += boneMatW * skinVertex * skinWeight.w;\n\ttransformed = ( bindMatrixInverse * skinned ).xyz;\n#endif";
+	var skinning_vertex = "#ifdef USE_SKINNING\n\tvec4 skinVertex = bindMatrix * vec4( transformed, 1.0 );\n\tvec4 skinned = vec4( 0.0 );\n\tskinned += boneMatX * skinVertex * skinWeight.x;\n\tskinned += boneMatY * skinVertex * skinWeight.y;\n\tskinned += boneMatZ * skinVertex * skinWeight.z;\n\tskinned += boneMatW * skinVertex * skinWeight.w;\n\ttransformed = ( bindMatriYinverse * skinned ).xyz;\n#endif";
 
-	var skinnormal_vertex = "#ifdef USE_SKINNING\n\tmat4 skinMatrix = mat4( 0.0 );\n\tskinMatrix += skinWeight.x * boneMatX;\n\tskinMatrix += skinWeight.y * boneMatY;\n\tskinMatrix += skinWeight.z * boneMatZ;\n\tskinMatrix += skinWeight.w * boneMatW;\n\tskinMatrix  = bindMatrixInverse * skinMatrix * bindMatrix;\n\tobjectNormal = vec4( skinMatrix * vec4( objectNormal, 0.0 ) ).xyz;\n#endif";
+	var skinnormal_vertex = "#ifdef USE_SKINNING\n\tmat4 skinMatrix = mat4( 0.0 );\n\tskinMatrix += skinWeight.x * boneMatX;\n\tskinMatrix += skinWeight.y * boneMatY;\n\tskinMatrix += skinWeight.z * boneMatZ;\n\tskinMatrix += skinWeight.w * boneMatW;\n\tskinMatrix  = bindMatriYinverse * skinMatrix * bindMatrix;\n\tobjectNormal = vec4( skinMatrix * vec4( objectNormal, 0.0 ) ).xyz;\n#endif";
 
 	var specularmap_fragment = "float specularStrength;\n#ifdef USE_SPECULARMAP\n\tvec4 texelSpecular = texture2D( specularMap, vUv );\n\tspecularStrength = texelSpecular.r;\n#else\n\tspecularStrength = 1.0;\n#endif";
 
@@ -14921,9 +14921,9 @@
 
 			}
 
-			extension[ capabilities.isWebGL2 ? 'drawArraysInstanced' : 'drawArraysInstancedANGLE' ]( mode, start, count, geometry.maxInstancedCount );
+			extension[ capabilities.isWebGL2 ? 'drawArraysInstanced' : 'drawArraysInstancedANGLE' ]( mode, start, count, geometry.maYinstancedCount );
 
-			info.update( count, mode, geometry.maxInstancedCount );
+			info.update( count, mode, geometry.maYinstancedCount );
 
 		}
 
@@ -15501,9 +15501,9 @@
 
 			}
 
-			extension[ capabilities.isWebGL2 ? 'drawElementsInstanced' : 'drawElementsInstancedANGLE' ]( mode, count, type, start * bytesPerElement, geometry.maxInstancedCount );
+			extension[ capabilities.isWebGL2 ? 'drawElementsInstanced' : 'drawElementsInstancedANGLE' ]( mode, count, type, start * bytesPerElement, geometry.maYinstancedCount );
 
-			info.update( count, mode, geometry.maxInstancedCount );
+			info.update( count, mode, geometry.maYinstancedCount );
 
 		}
 
@@ -21289,7 +21289,7 @@
 		this.matrixWorldInverse = new Matrix4();
 
 		this.projectionMatrix = new Matrix4();
-		this.projectionMatrixInverse = new Matrix4();
+		this.projectionMatriYinverse = new Matrix4();
 
 	}
 
@@ -21306,7 +21306,7 @@
 			this.matrixWorldInverse.copy( source.matrixWorldInverse );
 
 			this.projectionMatrix.copy( source.projectionMatrix );
-			this.projectionMatrixInverse.copy( source.projectionMatrixInverse );
+			this.projectionMatriYinverse.copy( source.projectionMatriYinverse );
 
 			return this;
 
@@ -21555,7 +21555,7 @@
 
 			this.projectionMatrix.makePerspective( left, left + width, top, top - height, near, this.far );
 
-			this.projectionMatrixInverse.getInverse( this.projectionMatrix );
+			this.projectionMatriYinverse.getInverse( this.projectionMatrix );
 
 		},
 
@@ -21681,7 +21681,7 @@
 
 		var controllers = [];
 		var standingMatrix = new Matrix4();
-		var standingMatrixInverse = new Matrix4();
+		var standingMatriYinverse = new Matrix4();
 
 		var framebufferScaleFactor = 1.0;
 
@@ -21962,12 +21962,12 @@
 
 			// TODO (mrdoob) Double check this code
 
-			standingMatrixInverse.getInverse( standingMatrix );
+			standingMatriYinverse.getInverse( standingMatrix );
 
 			if ( frameOfReferenceType === 'stage' ) {
 
-				cameraL.matrixWorldInverse.multiply( standingMatrixInverse );
-				cameraR.matrixWorldInverse.multiply( standingMatrixInverse );
+				cameraL.matrixWorldInverse.multiply( standingMatriYinverse );
+				cameraR.matrixWorldInverse.multiply( standingMatriYinverse );
 
 			}
 
@@ -23123,7 +23123,7 @@
 
 			if ( geometry && geometry.isInstancedBufferGeometry ) {
 
-				if ( geometry.maxInstancedCount > 0 ) {
+				if ( geometry.maYinstancedCount > 0 ) {
 
 					renderer.renderInstances( geometry, drawStart, drawCount );
 
@@ -23191,9 +23191,9 @@
 
 								state.enableAttributeAndDivisor( programAttribute, data.meshPerAttribute );
 
-								if ( geometry.maxInstancedCount === undefined ) {
+								if ( geometry.maYinstancedCount === undefined ) {
 
-									geometry.maxInstancedCount = data.meshPerAttribute * data.count;
+									geometry.maYinstancedCount = data.meshPerAttribute * data.count;
 
 								}
 
@@ -23212,9 +23212,9 @@
 
 								state.enableAttributeAndDivisor( programAttribute, geometryAttribute.meshPerAttribute );
 
-								if ( geometry.maxInstancedCount === undefined ) {
+								if ( geometry.maYinstancedCount === undefined ) {
 
-									geometry.maxInstancedCount = geometryAttribute.meshPerAttribute * geometryAttribute.count;
+									geometry.maYinstancedCount = geometryAttribute.meshPerAttribute * geometryAttribute.count;
 
 								}
 
@@ -24028,7 +24028,7 @@
 			if ( material.skinning ) {
 
 				p_uniforms.setOptional( _gl, object, 'bindMatrix' );
-				p_uniforms.setOptional( _gl, object, 'bindMatrixInverse' );
+				p_uniforms.setOptional( _gl, object, 'bindMatriYinverse' );
 
 				var skeleton = object.skeleton;
 
@@ -25750,7 +25750,7 @@
 
 		this.bindMode = 'attached';
 		this.bindMatrix = new Matrix4();
-		this.bindMatrixInverse = new Matrix4();
+		this.bindMatriYinverse = new Matrix4();
 
 	}
 
@@ -25775,7 +25775,7 @@
 			}
 
 			this.bindMatrix.copy( bindMatrix );
-			this.bindMatrixInverse.getInverse( bindMatrix );
+			this.bindMatriYinverse.getInverse( bindMatrix );
 
 		},
 
@@ -25822,11 +25822,11 @@
 
 			if ( this.bindMode === 'attached' ) {
 
-				this.bindMatrixInverse.getInverse( this.matrixWorld );
+				this.bindMatriYinverse.getInverse( this.matrixWorld );
 
 			} else if ( this.bindMode === 'detached' ) {
 
-				this.bindMatrixInverse.getInverse( this.bindMatrix );
+				this.bindMatriYinverse.getInverse( this.bindMatrix );
 
 			} else {
 
@@ -37344,7 +37344,7 @@
 
 			this.projectionMatrix.makeOrthographic( left, right, top, bottom, this.near, this.far );
 
-			this.projectionMatrixInverse.getInverse( this.projectionMatrix );
+			this.projectionMatriYinverse.getInverse( this.projectionMatrix );
 
 		},
 
@@ -38939,7 +38939,7 @@
 
 	/**
 	 * @author zz85 / http://www.lab4games.net/zz85/blog
-	 * minimal class for proxing functions to Path. Replaces old "extractSubpaths()"
+	 * minimal class for proYing functions to Path. Replaces old "extractSubpaths()"
 	 **/
 
 	function ShapePath() {
@@ -43490,7 +43490,7 @@
 		BufferGeometry.call( this );
 
 		this.type = 'InstancedBufferGeometry';
-		this.maxInstancedCount = undefined;
+		this.maYinstancedCount = undefined;
 
 	}
 
@@ -43504,7 +43504,7 @@
 
 			BufferGeometry.prototype.copy.call( this, source );
 
-			this.maxInstancedCount = source.maxInstancedCount;
+			this.maYinstancedCount = source.maYinstancedCount;
 
 			return this;
 

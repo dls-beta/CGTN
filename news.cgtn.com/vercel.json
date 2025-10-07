@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/",
-      "destination": "/news/2025-10-05/Xin/index.html"
+      "destination": "/news/2025-10-05/Yin/index.html"
     }
   ]
 }
